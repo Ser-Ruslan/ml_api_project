@@ -75,3 +75,22 @@ def predict_get(
 def get_model_info():
     """Возвращает коэффициенты модели и значение R2."""
     return JSONResponse(content=model_info)
+
+from app.model_manager import ModelManager
+
+model_manager = ModelManager(
+    model_path="app/models/linear_regression_6_features_sklearn_1.7.2.joblib",
+    meta_path="app/models/model_info.json"
+)
+
+
+@app.post("/predict_with_meta")
+def predict_with_meta(features: list[float]):
+    """
+    Предсказание с возвратом метаданных модели.
+    """
+    return {
+        "prediction": model_manager.predict(features),
+        "r2": model_manager.r2,
+        "note": model_manager.note
+    }
