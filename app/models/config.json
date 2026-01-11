@@ -1,0 +1,74 @@
+{
+  "model_type": "LogisticRegression",
+  "sklearn_version": "1.7.2",
+  "feature_names": [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "oldpeak",
+    "ca",
+    "sex_encoded",
+    "cp_encoded",
+    "fbs_encoded",
+    "restecg_encoded",
+    "exang_encoded",
+    "slope_encoded",
+    "thal_encoded"
+  ],
+  "feature_names_numeric": [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "oldpeak",
+    "ca"
+  ],
+  "feature_names_categorical": [
+    "sex",
+    "cp",
+    "fbs",
+    "restecg",
+    "exang",
+    "slope",
+    "thal"
+  ],
+  "metrics_test": {
+    "accuracy": 0.7777777777777778,
+    "precision": 0.7619047619047619,
+    "recall": 0.6956521739130435,
+    "f1": 0.7272727272727273,
+    "roc_auc": 0.9186535764375877
+  },
+  "cv": {
+    "accuracy_scores": [
+      0.813953488372093,
+      0.7674418604651163,
+      0.8372093023255814,
+      0.8333333333333334,
+      0.8095238095238095
+    ],
+    "accuracy_mean": 0.8122923588039868,
+    "accuracy_std": 0.024841771681612324,
+    "f1_scores": [
+      0.75,
+      0.7058823529411765,
+      0.8108108108108109,
+      0.7878787878787878,
+      0.7647058823529411
+    ],
+    "f1_mean": 0.7638555667967433,
+    "f1_std": 0.035596357634243486,
+    "roc_auc_scores": [
+      0.8422222222222223,
+      0.8444444444444444,
+      0.8866666666666666,
+      0.8752941176470588,
+      0.912037037037037
+    ],
+    "roc_auc_mean": 0.8721328976034858,
+    "roc_auc_std": 0.026362333126572095
+  },
+  "train_size": 213,
+  "test_size": 54
+}

@@ -1,7 +1,8 @@
-fastapi
-uvicorn[standard]
-scikit-learn
-joblib
-python-dotenv
-requests
-pytest
+fastapi==0.118.0
+uvicorn[standard]==0.37.0
+scikit-learn==1.7.2
+joblib==1.5.2
+python-dotenv==1.1.1
+pandas==2.3.2
+requests==2.32.5
+pytest==9.0.2
