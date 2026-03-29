@@ -1,59 +1,58 @@
 import numpy as np
 import pytest
-from linear_regression_model import LinearRegressionModel
+from logistic_regression_model import LogisticRegressionModel
 
 
-class TestLinearRegressionModel:
+class TestLogisticRegressionModel:
     """
-    Тесты для класса LinearRegressionModel.
+    Тесты для класса LogisticRegressionModel.
     """
     
     def setup_method(self):
         """
         Настройка перед каждым тестом.
         """
-        self.model = LinearRegressionModel()
+        self.model = LogisticRegressionModel()
     
-    def test_predict_basic(self):
+    def test_predict_class_1(self):
         """
-        Тест базовой функциональности с простыми значениями.
+        Тест предсказания класса 1 при больших значениях.
         """
-        # Входные данные: [1, 1, 1]
+        # Входные данные с большими значениями, которые должны дать вероятность > 0.5
         x = np.array([1.0, 1.0, 1.0])
-        expected = 48.6 * 1.0 + 2 * 1.0 + (45.9 / 50) * 1.0
+        # z = 48.6*1 + 2*1 + (45.9/50)*1 = 48.6 + 2 + 0.918 = 51.518
+        # sigmoid(51.518) ≈ 1.0, поэтому результат должен быть 1
         result = self.model.predict(x)
         
-        assert abs(result - expected) < 1e-10
-        assert isinstance(result, float)
+        assert result == 1
+        assert isinstance(result, int)
     
-    def test_predict_zero_input(self):
+    def test_predict_class_0(self):
         """
-        Тест с нулевыми входными данными.
+        Тест предсказания класса 0 при малых значениях.
         """
-        # Входные данные: [0, 0, 0]
+        # Входные данные с очень малыми значениями, которые должны дать вероятность < 0.5
+        x = np.array([-1.0, -1.0, -1.0])
+        # z = 48.6*(-1) + 2*(-1) + (45.9/50)*(-1) = -48.6 - 2 - 0.918 = -51.518
+        # sigmoid(-51.518) ≈ 0.0, поэтому результат должен быть 0
+        result = self.model.predict(x)
+        
+        assert result == 0
+        assert isinstance(result, int)
+    
+    def test_predict_boundary_case(self):
+        """
+        Тест пограничного случая, когда z близко к 0.
+        """
+        # Подбираем значения так, чтобы z было близко к 0
+        # Нужно решить: 48.6*x0 + 2*x1 + 0.918*x2 ≈ 0
+        # Возьмем очень маленькие значения
         x = np.array([0.0, 0.0, 0.0])
-        expected = 0.0
+        # z = 0, sigmoid(0) = 0.5, но в нашей реализации 0.5 не > 0.5, поэтому будет 0
         result = self.model.predict(x)
         
-        assert result == expected
-        assert isinstance(result, float)
-    
-    def test_predict_specific_values(self):
-        """
-        Тест с конкретными значениями для проверки вычислений.
-        """
-        # Входные данные: [2, 3, 50]
-        x = np.array([2.0, 3.0, 50.0])
-        expected = 48.6 * 2.0 + 2 * 3.0 + (45.9 / 50) * 50.0
-        # 48.6 * 2 = 97.2
-        # 2 * 3 = 6
-        # (45.9 / 50) * 50 = 45.9
-        # Итого: 97.2 + 6 + 45.9 = 149.1
-        expected = 149.1
-        result = self.model.predict(x)
-        
-        assert abs(result - expected) < 1e-10
-        assert isinstance(result, float)
+        assert result == 0
+        assert isinstance(result, int)
     
     def test_predict_wrong_length(self):
         """
@@ -68,26 +67,24 @@ class TestLinearRegressionModel:
 
 if __name__ == "__main__":
     # Запуск тестов без pytest
-    model = LinearRegressionModel()
+    model = LogisticRegressionModel()
     
-    # Тест 1
+    # Тест 1 - класс 1
     x1 = np.array([1.0, 1.0, 1.0])
     result1 = model.predict(x1)
-    expected1 = 48.6 * 1.0 + 2 * 1.0 + (45.9 / 50) * 1.0
-    assert abs(result1 - expected1) < 1e-10
-    print(f"Тест 1 пройден: {result1}")
+    assert result1 == 1
+    print(f"Тест 1 пройден: предсказан класс {result1}")
     
-    # Тест 2
-    x2 = np.array([0.0, 0.0, 0.0])
+    # Тест 2 - класс 0
+    x2 = np.array([-1.0, -1.0, -1.0])
     result2 = model.predict(x2)
-    assert result2 == 0.0
-    print(f"Тест 2 пройден: {result2}")
+    assert result2 == 0
+    print(f"Тест 2 пройден: предсказан класс {result2}")
     
-    # Тест 3
-    x3 = np.array([2.0, 3.0, 50.0])
+    # Тест 3 - пограничный случай
+    x3 = np.array([0.0, 0.0, 0.0])
     result3 = model.predict(x3)
-    expected3 = 149.1
-    assert abs(result3 - expected3) < 1e-10
-    print(f"Тест 3 пройден: {result3}")
+    assert result3 == 0
+    print(f"Тест 3 пройден: предсказан класс {result3}")
     
     print("Все тесты успешно пройдены!")

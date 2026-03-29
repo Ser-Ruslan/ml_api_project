@@ -2,17 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 import numpy as np
-from linear_regression_model import LinearRegressionModel
+from logistic_regression_model import LogisticRegressionModel
 
 # pip install -r requirements.txt
 # uvicorn fastapi_server:app --reload
 # pytest test_model.py
 
 
-app = FastAPI(title="API Server", description="API для линейной регрессии")
+app = FastAPI(title="API Server", description="API для логистической регрессии")
 
 # Инициализация модели
-model = LinearRegressionModel()
+model = LogisticRegressionModel()
 
 
 class PredictionRequest(BaseModel):
