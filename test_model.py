@@ -1,57 +1,56 @@
 import numpy as np
-from logistic_regression_model import LogisticRegressionModel
+from logistic_regression_model import LinearRegressionModel
 
 
-def test_predict_class_1():
+def test_predict_positive():
     """
-    Тест предсказания класса 1 при больших значениях.
+    Тест предсказания с положительными значениями.
     """
-    model = LogisticRegressionModel(b0=42, coefficients=np.array([4.0, 40.0]))
+    model = LinearRegressionModel(b0=42, coefficients=np.array([4.0, 40.0]))
     
-    # Входные данные с большими значениями, которые должны дать вероятность > 0.5
+    # Входные данные
     x = np.array([1.0, 40.0])
-    # z = 42 + 4*1 + 40*1 = 86
+    # y = 42 + 4*1 + 40*40 = 42 + 4 + 1600 = 1646
     result = model.predict(x)
     
-    assert result == 1
-    assert isinstance(result, int)
+    assert result == 1646.0
+    assert isinstance(result, float)
 
 
-def test_predict_class_0():
+def test_predict_negative():
     """
-    Тест предсказания класса 0 при малых значениях.
+    Тест предсказания с отрицательными значениями.
     """
-    model = LogisticRegressionModel(b0=42, coefficients=np.array([4.0, 40.0]))
+    model = LinearRegressionModel(b0=42, coefficients=np.array([4.0, 40.0]))
     
-    # Входные данные с очень малыми значениями, которые должны дать вероятность < 0.5
-    x = np.array([-20.0, -1.0])
-    # z = 42 + 4*(-20) + 40*(-1) = 42 - 80 - 40 = -78
+    # Входные данные
+    x = np.array([-10.0, -1.0])
+    # y = 42 + 4*(-10) + 40*(-1) = 42 - 40 - 40 = -38
     result = model.predict(x)
     
-    assert result == 0
-    assert isinstance(result, int)
+    assert result == -38.0
+    assert isinstance(result, float)
 
 
-def test_predict_boundary_case():
+def test_predict_zero():
     """
-    Тест пограничного случая, когда вероятность близка к 0.5.
+    Тест предсказания с нулевыми значениями.
     """
-    model = LogisticRegressionModel(b0=0, coefficients=np.array([1.0, 1.0]))
+    model = LinearRegressionModel(b0=0, coefficients=np.array([1.0, 1.0]))
     
-    # Подбираем значения так, чтобы z было близко к 0
+    # Входные данные
     x = np.array([0.0, 0.0])
-    # z = 0 + 1*0 + 1*0 = 0
-    # sigmoid(0) = 0.5, но в нашей реализации 0.5 не > 0.5, поэтому будет 0
+    # y = 0 + 1*0 + 1*0 = 0
     result = model.predict(x)
     
-    assert result == 0
-    assert isinstance(result, int)
+    assert result == 0.0
+    assert isinstance(result, float)
 
 
 if __name__ == "__main__":
     # Запуск тестов
-    test_predict_class_1()
-    test_predict_class_0()
-    test_predict_boundary_case()
+    test_predict_positive()
+    test_predict_negative()
+    test_predict_zero()
     
     print("Все тесты успешно пройдены!")

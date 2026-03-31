@@ -2,17 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List, Union
 import numpy as np
-from logistic_regression_model import LogisticRegressionModel
+from linear_regression_model import LinearRegressionModel
 
 # pip install -r requirements.txt
 # uvicorn fastapi_server:app --reload
 # pytest test_model.py
 
 
-app = FastAPI(title="API Server", description="API для логистической регрессии")
+app = FastAPI(title="API Server", description="API для линейной регрессии")
 
 # Инициализация модели с параметрами по умолчанию
-model = LogisticRegressionModel(b0=42, coefficients=np.array([4.0, 40.0]))
+model = LinearRegressionModel(b0=42, coefficients=np.array([4.0, 40.0]))
 
 
 class PredictionRequest(BaseModel):
@@ -27,7 +27,7 @@ class PredictionResponse(BaseModel):
     """
     Модель ответа с предсказанием.
     """
-    prediction: int
+    prediction: float
 
 
 @app.get("/")
@@ -35,19 +35,19 @@ def read_root():
     """
     Корневой эндпоинт.
     """
-    return {"message": "Сервер запущен", "model": "Logistic Regression"}
+    return {"message": "Сервер запущен", "model": "Linear Regression"}
 
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
     """
-    Эндпоинт для получения предсказания от модели логистической регрессии.
+    Эндпоинт для получения предсказания от модели линейной регрессии.
     
     Args:
         request: запрос с оценкой по ИС и баллами по Python
         
     Returns:
-        PredictionResponse: ответ с предсказанным классом
+        PredictionResponse: ответ с предсказанным значением
     """
     try:
         # Нормализация и создание numpy массива
@@ -56,7 +56,7 @@ def predict(request: PredictionRequest):
         # Получение предсказания
         prediction = model.predict(X)
         
-        return PredictionResponse(prediction=int(prediction))
+        return PredictionResponse(prediction=float(prediction))
     
     except ValueError as e:
         from fastapi import HTTPException
