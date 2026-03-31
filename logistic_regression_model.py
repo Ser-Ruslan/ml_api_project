@@ -4,7 +4,6 @@ import numpy as np
 class LogisticRegressionModel:
     """
     Класс для имитации модели машинного обучения логистической регрессии.
-    Оптимизирован с использованием векторизованных операций NumPy.
     """
     
     def __init__(self, b0: float = 48.6, coefficients: np.ndarray = None):
@@ -12,7 +11,7 @@ class LogisticRegressionModel:
         Инициализация модели с заданными коэффициентами регрессии.
         
         Args:
-            b0: свободный член (intercept)
+            b0: свободный член 
             coefficients: numpy массив весов признаков
         """
         self.b0 = b0
@@ -25,7 +24,7 @@ class LogisticRegressionModel:
     
     def _sigmoid(self, z: np.ndarray) -> np.ndarray:
         """
-        Векторизованная сигмоидная функция активации.
+        Векторизованная сигмоидная функция.
         
         Args:
             z: numpy массив входных значений
@@ -72,16 +71,3 @@ class LogisticRegressionModel:
         
         # Бинарная классификация: если вероятность > 0.5, то класс 1, иначе 0
         return 1 if probability > 0.5 else 0
-    
-    def predict_batch(self, X: np.ndarray) -> np.ndarray:
-        """
-        Предсказывает классы для нескольких примеров одновременно.
-        
-        Args:
-            X: numpy массив признаков shape (n_samples, n_features)
-               
-        Returns:
-            np.ndarray: массив предсказанных классов (0 или 1)
-        """
-        probabilities = self.predict_proba(X)
-        return (probabilities > 0.5).astype(int)
