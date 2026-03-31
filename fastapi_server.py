@@ -35,7 +35,7 @@ def read_root():
     """
     Корневой эндпоинт.
     """
-    return {"message": "Сервер запущен", "model": "Linear Regression"}
+    return {"message": "Сервер запущен"}
 
 
 @app.post("/predict", response_model=PredictionResponse)
