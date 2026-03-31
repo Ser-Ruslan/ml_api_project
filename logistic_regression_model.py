@@ -4,49 +4,84 @@ import numpy as np
 class LogisticRegressionModel:
     """
     Класс для имитации модели машинного обучения логистической регрессии.
+    Оптимизирован с использованием векторизованных операций NumPy.
     """
     
-    def __init__(self):
+    def __init__(self, b0: float = 48.6, coefficients: np.ndarray = None):
         """
         Инициализация модели с заданными коэффициентами регрессии.
-        """
-        self.b0 = 48.6  # количество баллов по ИС
-        self.b1 = 2     # оценка по ИС
-        self.b2 = 45.9 / 50  # количество баллов по Python / 50
-    
-    def _sigmoid(self, z: float) -> float:
-        """
-        Сигмоидная функция активации.
         
         Args:
-            z: входное значение
+            b0: свободный член (intercept)
+            coefficients: numpy массив весов признаков
+        """
+        self.b0 = b0
+        
+        # Если коэффициенты не переданы, используем значения по умолчанию
+        if coefficients is None:
+            self.B = np.array([2.0, 45.9 / 50.0])  # b1, b2
+        else:
+            self.B = np.array(coefficients)
+    
+    def _sigmoid(self, z: np.ndarray) -> np.ndarray:
+        """
+        Векторизованная сигмоидная функция активации.
+        
+        Args:
+            z: numpy массив входных значений
             
         Returns:
-            float: значение сигмоиды в диапазоне (0, 1)
+            np.ndarray: массив значений сигмоиды в диапазоне (0, 1)
         """
         return 1.0 / (1.0 + np.exp(-z))
+    
+    def predict_proba(self, X: np.ndarray) -> np.ndarray:
+        """
+        Вычисляет вероятности для входных данных.
+        
+        Args:
+            X: numpy массив признаков shape (n_samples, n_features)
+               
+        Returns:
+            np.ndarray: массив вероятностей shape (n_samples,)
+        """
+        if X.shape[1] != len(self.B):
+            raise ValueError(f"Ожидается {len(self.B)} признаков, получено {X.shape[1]}")
+        
+        # Векторизованное вычисление линейной комбинации: z = X·B + b0
+        z = np.dot(X, self.B) + self.b0
+        
+        # Применение сигмоидной функции
+        return self._sigmoid(z)
     
     def predict(self, x: np.ndarray) -> int:
         """
         Применяет модель логистической регрессии к входным данным.
         
         Args:
-            x: numpy массив с тремя элементами [x0, x1, x2]
-               x0 - признак для b0
-               x1 - признак для b1 
-               x2 - признак для b2
+            x: numpy массив с признаками [x0, x1, x2, ...]
                
         Returns:
             int: предсказанное значение (0 или 1)
         """
-        if len(x) != 3:
-            raise ValueError("Входной массив должен содержать ровно 3 элемента")
+        # Преобразуем в 2D массив для совместимости с predict_proba
+        x_reshaped = x.reshape(1, -1) if x.ndim == 1 else x
         
-        # Вычисление линейной комбинации: z = b0*x0 + b1*x1 + b2*x2
-        z = self.b0 * x[0] + self.b1 * x[1] + self.b2 * x[2]
-        
-        # Применение сигмоидной функции
-        probability = self._sigmoid(z)
+        # Получаем вероятность
+        probability = self.predict_proba(x_reshaped)[0]
         
         # Бинарная классификация: если вероятность > 0.5, то класс 1, иначе 0
         return 1 if probability > 0.5 else 0
+    
+    def predict_batch(self, X: np.ndarray) -> np.ndarray:
+        """
+        Предсказывает классы для нескольких примеров одновременно.
+        
+        Args:
+            X: numpy массив признаков shape (n_samples, n_features)
+               
+        Returns:
+            np.ndarray: массив предсказанных классов (0 или 1)
+        """
+        probabilities = self.predict_proba(X)
+        return (probabilities > 0.5).astype(int)
